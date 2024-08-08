@@ -1,9 +1,11 @@
 import customApiError from '@/errors/apiErrors';
 import userDatamapper from '@/models/user';
+import { UserWithPassword } from '@/types/user';
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
-import { UserWithPassword } from 'types/user';
+import jwt from 'jsonwebtoken';
 
+const JWT_SECRET = process.env.JWT_SECRET;
 const saltOrRounds = 10;
 
 export default {
@@ -13,8 +15,13 @@ export default {
   },
 
   async register(req: Request, res: Response) {
-    const { email, firstname, lastname, password, user_role }: UserWithPassword =
-      req.body;
+    const {
+      email,
+      firstname,
+      lastname,
+      password,
+      user_role,
+    }: UserWithPassword = req.body;
 
     try {
       const existingUser = await userDatamapper.findUserByEmail(email);
@@ -28,7 +35,7 @@ export default {
         return;
       }
 
-      const hashed_password = await bcrypt.hash(password, 10);
+      const hashed_password = await bcrypt.hash(password, saltOrRounds);
 
       await userDatamapper.createUser({
         email: email,
@@ -41,6 +48,47 @@ export default {
       res.status(200).json({
         message: `User successfully created !`,
       });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new customApiError(err.message, 400);
+      }
+    }
+  },
+  async login(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        res.status(400).json({ error: 'Email and password are required' });
+        return;
+      }
+
+      const existingUser = await userDatamapper.findUserByEmail(email);
+      if (!existingUser) {
+        res.status(401).json({ error: 'Invalid email or password' });
+        return;
+      }
+      
+
+      const validPassword = await bcrypt.compare(
+        password,
+        existingUser.hashed_password
+      );
+
+      if (!validPassword) {
+        res.status(401).json({ error: 'Invalid email or password' });
+        return;
+      }
+
+      if (!JWT_SECRET) {
+        throw new Error('JWT_SECRET is not defined');
+      }
+
+      const token = jwt.sign({ id: existingUser.id, role: existingUser.user_role }, JWT_SECRET, {
+        expiresIn: '1h',
+      });
+
+      res.status(200).json({ message: 'Login successful', token });
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new customApiError(err.message, 400);

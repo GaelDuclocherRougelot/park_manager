@@ -1,6 +1,6 @@
 const sql = require('@/config/db.ts');
 import CustomApiError from '@/errors/apiErrors';
-import { UserWithHashedPassword } from 'types/user';
+import { UserWithHashedPassword } from '@/types/user';
 
 export default {
   async findAllUsers() {
@@ -14,7 +14,7 @@ export default {
       SELECT * FROM "users" WHERE "email" = ${email}
     `;
 
-      return existingUser;
+      return existingUser[0];
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new CustomApiError(err.message, 400);

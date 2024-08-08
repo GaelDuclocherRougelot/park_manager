@@ -1,10 +1,15 @@
 import userController from '@/controllers/user';
+import { authenticateJWT } from '@/middlewares/JWT';
+import { login, register } from '@/validations/schemas/user';
+import validator from '@/validations/validator';
 import express from 'express';
 
 const router = express.Router();
 
-router.get('/', userController.findAllUsers);
+router.get('/', authenticateJWT, userController.findAllUsers);
 
-router.post('/register', userController.register);
+router.post('/register', validator(register), userController.register);
+
+router.post('/login', validator(login), userController.login);
 
 export default router;
