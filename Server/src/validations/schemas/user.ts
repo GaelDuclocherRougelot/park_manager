@@ -8,15 +8,7 @@ const register = joi.object({
   lastname: joi.string().max(128).required(),
   password: joi
     .string()
-    .min(3)
-    .max(128)
-    .required()
-    .pattern(
-      new RegExp('^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$')
-    ),
-  confirm_password: joi
-    .string()
-    .min(3)
+    .min(8)
     .max(128)
     .required()
     .pattern(

@@ -15,7 +15,7 @@ export const authenticateJWT = (
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
       if (err) {
-        return res.status(403).json({ error: 'Forbidden' });
+        return res.status(403).json({ error: 'unauthorized' });
       }
 
       req.user = user;

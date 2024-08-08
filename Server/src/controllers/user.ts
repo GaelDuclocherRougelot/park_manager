@@ -14,6 +14,15 @@ export default {
     return res.json(users);
   },
 
+  async findOneUserById(req: Request, res: Response) {
+    if(!req.user.id) {
+      res.status(400).json({ error: 'User not connected' });
+        return;
+    }
+    const user = await userDatamapper.findUserById(req.user.id);
+    return res.json(user);
+  },
+
   async register(req: Request, res: Response) {
     const {
       email,
@@ -22,10 +31,10 @@ export default {
       password,
       user_role,
     }: UserWithPassword = req.body;
-
+    
     try {
-      const existingUser = await userDatamapper.findUserByEmail(email);
-      if (existingUser.length > 0) {
+      const isExistingUser = await userDatamapper.findUserByEmail(email);
+      if (Object.keys(isExistingUser).length !== 0 && isExistingUser.constructor === Object) {
         res.status(409).json({ error: 'Email already in use' });
         return;
       }

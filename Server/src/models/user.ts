@@ -22,6 +22,20 @@ export default {
     }
   },
 
+  async findUserById(id: number) {
+    try {
+      const existingUser = await sql`
+      SELECT * FROM "users" WHERE "id" = ${id}
+    `;
+
+      return existingUser[0];
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+
   async createUser(user: UserWithHashedPassword) {
     try {
       await sql`

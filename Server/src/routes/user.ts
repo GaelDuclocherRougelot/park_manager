@@ -12,4 +12,6 @@ router.post('/register', validator(register), userController.register);
 
 router.post('/login', validator(login), userController.login);
 
+router.get('/profile', authenticateJWT, userController.findOneUserById);
+
 export default router;
