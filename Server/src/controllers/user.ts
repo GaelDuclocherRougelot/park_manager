@@ -31,19 +31,14 @@ export default {
       password,
       user_role,
     }: UserWithPassword = req.body;
-
     try {
-      const isExistingUser = await userDatamapper.findUserByEmail(email);
+      const isExistingUser = await userDatamapper.findUserByEmail(email);      
       if (
+        isExistingUser !== undefined &&
         Object.keys(isExistingUser).length !== 0 &&
         isExistingUser.constructor === Object
       ) {
         res.status(409).json({ error: 'Email already in use' });
-        return;
-      }
-
-      if (!email || !password || !firstname || !lastname || !user_role) {
-        res.status(400).json({ error: 'All inputs are required' });
         return;
       }
 

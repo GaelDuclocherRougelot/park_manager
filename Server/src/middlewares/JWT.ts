@@ -25,3 +25,14 @@ export const authenticateJWT = (
     res.status(401).json({ error: 'Unauthorized' });
   }
 };
+
+export const isAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if(req.user.user_role !== "admin") {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+};

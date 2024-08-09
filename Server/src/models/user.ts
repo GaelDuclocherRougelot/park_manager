@@ -12,8 +12,7 @@ export default {
     try {
       const existingUser = await sql`
       SELECT * FROM "users" WHERE "email" = ${email}
-    `;
-
+    `;      
       return existingUser[0];
     } catch (err: unknown) {
       if (err instanceof Error) {
