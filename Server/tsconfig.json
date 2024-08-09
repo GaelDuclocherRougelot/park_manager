@@ -2,16 +2,19 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "outDir": "dist", // Répertoire où les fichiers compilés seront placés
-    "rootDir": "src", // Répertoire des fichiers source TypeScript
+    "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "moduleResolution": "node",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
   },
-  "include": ["src/**/*.ts"], // Inclure uniquement les fichiers TypeScript sous src
-  "exclude": ["node_modules", "dist"] // Exclure node_modules et dist
+  "files": ["src/types/custom.d.ts"],
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
