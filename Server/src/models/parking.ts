@@ -59,4 +59,33 @@ export default {
       }
     }
   },
+
+  async assignUserToOneSpace(userId: number, spaceId: string) {
+    try {
+      await sql`
+      UPDATE "space"
+      SET space_owner = COALESCE(${userId}, space_owner),
+          occupation_time = NOW(),
+          updatedat = NOW()
+      WHERE "id" = ${spaceId}`;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+  async unassignUserToOneSpace(userId: number, spaceId: string) {
+    try {
+      await sql`
+      UPDATE "space"
+      SET space_owner = NULL,
+          occupation_time = NULL,
+          updatedat = NOW()
+      WHERE "id" = ${spaceId}`;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  }
 };

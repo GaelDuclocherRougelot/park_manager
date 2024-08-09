@@ -48,8 +48,6 @@ export default {
       }
 
       if (parking.owner !== req.user.id) {
-        console.log(parking);
-
         return res.status(404).json({ error: 'Wrong parking owner' });
       }
 
@@ -74,12 +72,31 @@ export default {
         }
       }
 
-      res
-        .status(201)
-        .json({
-          message: `${spaces.length} spaces created successfully!`,
-          spaces,
-        });
+      res.status(201).json({
+        message: `${spaces.length} spaces created successfully!`,
+        spaces,
+      });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        res.status(500).json({ error: err.message });
+      }
+    }
+  },
+
+  async assignUserToOneSpace(req: Request, res: Response) {
+    try {
+      await parkingDatamapper.assignUserToOneSpace(req.user.id, req.params.spaceId);
+      res.status(200).json('User successfully assigned to the space');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        res.status(500).json({ error: err.message });
+      }
+    }
+  },
+  async unassignUserToOneSpace(req: Request, res: Response) {
+    try {
+      await parkingDatamapper.unassignUserToOneSpace(req.user.id, req.params.spaceId);
+      res.status(200).json('User successfully unassigned from the space');
     } catch (err: unknown) {
       if (err instanceof Error) {
         res.status(500).json({ error: err.message });
