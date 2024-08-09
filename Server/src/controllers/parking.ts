@@ -34,6 +34,24 @@ export default {
     }
   },
 
+  async findAllFreeSpacesPerFloor(req: Request, res: Response) {
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 10;
+    const floor = req.params.floor;
+    try {
+      const spaces = await parkingDatamapper.findFreeSpacePerFloor(page, pageSize, floor);
+      res.status(200).json({
+        page,
+        pageSize,
+        spaces,
+      });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new customApiError(err.message, 400);
+      }
+    }
+  },
+
   async createSpaces(req: Request, res: Response) {
     const { parkingId } = req.params;
 

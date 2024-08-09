@@ -33,6 +33,21 @@ export default {
     }
   },
 
+  async findFreeSpacePerFloor(page: number, pageSize: number, floor: string) {
+    const offset = (page - 1) * pageSize;
+    const limit = pageSize;
+
+    try {
+      const freeSpaces =
+        await sql`SELECT * FROM "space" WHERE "space_owner" = NULL AND "floor" = ${floor} ORDER BY space_number DESC LIMIT ${limit} OFFSET ${offset}`;
+      return freeSpaces;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+
   async findParkingByPk(parkingId: string) {
     try {
       const parking =
