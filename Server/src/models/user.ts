@@ -55,12 +55,36 @@ export default {
     userData: { firstname: string; lastname: string },
     userId: number
   ) {
-    await sql`
-    UPDATE "users"
-    SET firstname = COALESCE(NULLIF(${userData.firstname}, ''), firstname),
-        lastname = COALESCE(NULLIF(${userData.lastname}, ''), lastname),
-        updatedat = NOW()
-    WHERE "id" = ${userId}
-  `;
+    try {
+      await sql`
+      UPDATE "users"
+      SET firstname = COALESCE(NULLIF(${userData.firstname}, ''), firstname),
+          lastname = COALESCE(NULLIF(${userData.lastname}, ''), lastname),
+          updatedat = NOW()
+      WHERE "id" = ${userId}`;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+
+  async deleteUser(userId: number) {
+    try {
+      await sql`
+      UPDATE "space"
+      SET space_owner = NULL
+      WHERE "space_owner" = ${userId}
+    `;
+
+      await sql`
+      DELETE FROM "users"
+      WHERE "id" = ${userId}
+    `;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
   },
 };

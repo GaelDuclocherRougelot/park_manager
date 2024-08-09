@@ -121,4 +121,15 @@ export default {
       }
     }
   },
+
+  async deleteProfile(req: Request, res: Response) {
+    try {
+      await userDatamapper.deleteUser(req.user.id);
+      res.json(`User with id: ${req.user.id} deleted`)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new customApiError(err.message, 400);
+      }
+    }
+  }
 };
