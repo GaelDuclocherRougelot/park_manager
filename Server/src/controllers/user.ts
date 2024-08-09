@@ -15,9 +15,9 @@ export default {
   },
 
   async findOneUserById(req: Request, res: Response) {
-    if(!req.user.id) {
+    if (!req.user.id) {
       res.status(400).json({ error: 'User not connected' });
-        return;
+      return;
     }
     const user = await userDatamapper.findUserById(req.user.id);
     return res.json(user);
@@ -31,10 +31,13 @@ export default {
       password,
       user_role,
     }: UserWithPassword = req.body;
-    
+
     try {
       const isExistingUser = await userDatamapper.findUserByEmail(email);
-      if (Object.keys(isExistingUser).length !== 0 && isExistingUser.constructor === Object) {
+      if (
+        Object.keys(isExistingUser).length !== 0 &&
+        isExistingUser.constructor === Object
+      ) {
         res.status(409).json({ error: 'Email already in use' });
         return;
       }
@@ -77,7 +80,6 @@ export default {
         res.status(401).json({ error: 'Invalid email or password' });
         return;
       }
-      
 
       const validPassword = await bcrypt.compare(
         password,
@@ -93,11 +95,26 @@ export default {
         throw new Error('JWT_SECRET is not defined');
       }
 
-      const token = jwt.sign({ id: existingUser.id, role: existingUser.user_role }, JWT_SECRET, {
-        expiresIn: '1h',
-      });
+      const token = jwt.sign(
+        { id: existingUser.id, role: existingUser.user_role },
+        JWT_SECRET,
+        {
+          expiresIn: '1h',
+        }
+      );
 
       res.status(200).json({ message: 'Login successful', token });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new customApiError(err.message, 400);
+      }
+    }
+  },
+  async updateProfile(req: Request, res: Response) {
+    const userData = req.body;
+    try {
+      await userDatamapper.updateUser(userData, req.user.id);
+      res.json({ message: 'Profile Updated' });
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new customApiError(err.message, 400);

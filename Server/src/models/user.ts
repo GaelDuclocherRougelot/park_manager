@@ -50,4 +50,17 @@ export default {
       }
     }
   },
+
+  async updateUser(
+    userData: { firstname: string; lastname: string },
+    userId: number
+  ) {
+    await sql`
+    UPDATE "users"
+    SET firstname = COALESCE(NULLIF(${userData.firstname}, ''), firstname),
+        lastname = COALESCE(NULLIF(${userData.lastname}, ''), lastname),
+        updatedat = NOW()
+    WHERE "id" = ${userId}
+  `;
+  },
 };
