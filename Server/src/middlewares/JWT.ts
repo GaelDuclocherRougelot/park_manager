@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
 export const authenticateJWT = (
   req: Request,
@@ -31,8 +32,9 @@ export const isAdmin = (
   res: Response,
   next: NextFunction
 ): void => {
-  if(req.user.user_role !== "admin") {
+  if (req.user.role !== 'admin') {
     res.status(401).json({ error: 'Unauthorized' });
+    return;
   }
   next();
 };
