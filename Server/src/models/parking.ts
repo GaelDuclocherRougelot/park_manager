@@ -18,6 +18,24 @@ export default {
     }
   },
 
+  async updateParking(
+    parkingData: { name: string; address: string },
+    parkingId: string
+  ) {
+    try {
+      await sql`
+      UPDATE "parking"
+      SET name = COALESCE(NULLIF(${parkingData.name}, ''), name),
+          address = COALESCE(NULLIF(${parkingData.address}, ''), address),
+          updatedat = NOW()
+      WHERE "id" = ${parkingId}`;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+
   async findAllParkings(page: number, pageSize: number) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
@@ -38,9 +56,27 @@ export default {
     const limit = pageSize;
 
     try {
-      const freeSpaces =
-        await sql`SELECT * FROM "space" WHERE "space_owner" = NULL AND "floor" = ${floor} ORDER BY space_number DESC LIMIT ${limit} OFFSET ${offset}`;
+      const freeSpaces = await sql`SELECT * 
+        FROM "space" 
+        WHERE "space_owner" IS NULL 
+        AND "floor" = ${floor} 
+        ORDER BY space_number ASC
+        LIMIT ${limit} 
+        OFFSET ${offset}`;
+
       return freeSpaces;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+
+  async findMySpaces(userId: number) {
+    try {
+      const currentSpaces =
+        await sql`SELECT * FROM "space" WHERE "space_owner" = ${userId}`;
+      return currentSpaces;
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new CustomApiError(err.message, 400);
@@ -52,6 +88,18 @@ export default {
     try {
       const parking =
         await sql`SELECT * FROM "parking" WHERE "id" = ${parkingId}`;
+      return parking;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+
+  async findParkingsByOwner(userId: number) {
+    try {
+      const parking =
+        await sql`SELECT * FROM "parking" WHERE "owner" = ${userId}`;
       return parking;
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -102,5 +150,5 @@ export default {
         throw new CustomApiError(err.message, 400);
       }
     }
-  }
+  },
 };

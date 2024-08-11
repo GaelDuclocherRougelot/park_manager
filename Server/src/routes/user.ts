@@ -19,6 +19,7 @@ router.patch('/profile/edit', authenticateJWT, validator(updateProfile), userCon
 router.delete('/profile/delete', authenticateJWT, userController.deleteProfile);
 
 // Spaces
+router.get('/space/find', authenticateJWT, parkingController.findMySpaces);
 router.get('/space/:floor', parkingController.findAllFreeSpacesPerFloor);
 router.patch('/space/assign/:spaceId', authenticateJWT, parkingController.assignUserToOneSpace);
 router.patch('/space/unassign/:spaceId', authenticateJWT, parkingController.unassignUserToOneSpace);

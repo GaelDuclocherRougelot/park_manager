@@ -16,6 +16,29 @@ export default {
       }
     }
   },
+
+  async findParkingsByOwner(req: Request, res: Response) {
+    try {
+      const parkings = await adminDatamapper.findParkingsByOwner(req.user.id);
+      res.status(200).json(parkings);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new customApiError(err.message, 400);
+      }
+    }
+  },
+
+  async updateParking(req: Request, res: Response) {
+    try {
+      await adminDatamapper.updateParking(req.body, req.params.parkingId);
+      res.status(200).json('Parking successfully updated');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new customApiError(err.message, 400);
+      }
+    }
+  },
+
   async getPaginatedParkings(req: Request, res: Response) {
     const page = parseInt(req.query.page as string) || 1;
     const pageSize = parseInt(req.query.pageSize as string) || 10;
@@ -39,12 +62,27 @@ export default {
     const pageSize = parseInt(req.query.pageSize as string) || 10;
     const floor = req.params.floor;
     try {
-      const spaces = await parkingDatamapper.findFreeSpacePerFloor(page, pageSize, floor);
+      const spaces = await parkingDatamapper.findFreeSpacePerFloor(
+        page,
+        pageSize,
+        floor
+      );
       res.status(200).json({
         page,
         pageSize,
         spaces,
       });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new customApiError(err.message, 400);
+      }
+    }
+  },
+
+  async findMySpaces(req: Request, res: Response) {
+    try {
+      const spaces = await parkingDatamapper.findMySpaces(req.user.id);
+      res.status(200).json(spaces);
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new customApiError(err.message, 400);
@@ -103,7 +141,10 @@ export default {
 
   async assignUserToOneSpace(req: Request, res: Response) {
     try {
-      await parkingDatamapper.assignUserToOneSpace(req.user.id, req.params.spaceId);
+      await parkingDatamapper.assignUserToOneSpace(
+        req.user.id,
+        req.params.spaceId
+      );
       res.status(200).json('User successfully assigned to the space');
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -113,7 +154,10 @@ export default {
   },
   async unassignUserToOneSpace(req: Request, res: Response) {
     try {
-      await parkingDatamapper.unassignUserToOneSpace(req.user.id, req.params.spaceId);
+      await parkingDatamapper.unassignUserToOneSpace(
+        req.user.id,
+        req.params.spaceId
+      );
       res.status(200).json('User successfully unassigned from the space');
     } catch (err: unknown) {
       if (err instanceof Error) {
