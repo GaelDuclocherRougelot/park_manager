@@ -3,12 +3,12 @@ import CustomApiError from '@/errors/apiErrors';
 import { Parking, Space } from '@/types/parking';
 
 export default {
-  async createParking(parkingData: Parking, userId: number) {
+  async createParking(parkingData: Parking, userId: number) {    
     try {
       await sql`
     INSERT INTO "parking"
-    ("name", "max_spaces", "max_floors", "address", "owner")
-    VALUES (${parkingData.name}, ${parkingData.space_per_floor}, ${parkingData.space_per_floor}, ${parkingData.address}, ${userId})
+    ("name", "space_per_floor", "floors", "address", "owner")
+    VALUES (${parkingData.name}, ${parkingData.space_per_floor}, ${parkingData.floors}, ${parkingData.address}, ${userId})
     RETURNING *
 `;
     } catch (err: unknown) {
@@ -29,6 +29,17 @@ export default {
           address = COALESCE(NULLIF(${parkingData.address}, ''), address),
           updatedat = NOW()
       WHERE "id" = ${parkingId}`;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+
+  async deleteParkingByPk(parkingId: string, userId: number) {
+    try {
+      await sql`DELETE FROM "parking" WHERE "id" = ${parkingId} AND "owner" = ${userId};
+      `
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new CustomApiError(err.message, 400);

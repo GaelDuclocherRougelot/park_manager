@@ -5,6 +5,8 @@ const router = express.Router();
 router.get('/parkings', parkingController.findParkingsByOwner);
 router.post('/parking/create', parkingController.createParking);
 router.patch('/parkings/edit/:parkingId', parkingController.updateParking);
+router.delete('/parkings/delete/:parkingId', parkingController.deleteParkingByPk);
+
 router.post('/spaces/create/:parkingId', parkingController.createSpaces);
 
 export default router;

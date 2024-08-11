@@ -6,7 +6,7 @@ import {
 import { Request, Response } from 'express';
 
 export default {
-  async createParking(req: Request, res: Response) {
+  async createParking(req: Request, res: Response) {    
     try {
       await adminDatamapper.createParking(req.body, req.user.id);
       res.status(201).json(`Parking (${req.body.name}) successfuly created !`);
@@ -32,6 +32,17 @@ export default {
     try {
       await adminDatamapper.updateParking(req.body, req.params.parkingId);
       res.status(200).json('Parking successfully updated');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new customApiError(err.message, 400);
+      }
+    }
+  },
+
+  async deleteParkingByPk(req: Request, res: Response) {
+    try {
+      await adminDatamapper.deleteParkingByPk(req.params.parkingId, req.user.id);
+      res.status(200).json('Parking successfully deleted');
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new customApiError(err.message, 400);
@@ -97,7 +108,6 @@ export default {
       // Récupération des détails du parking
       const parkingData = await parkingDatamapper.findParkingByPk(parkingId);
       const parking = parkingData[0];
-      console.log(parking);
 
       if (!parking) {
         return res.status(404).json({ error: 'Parking not found' });
