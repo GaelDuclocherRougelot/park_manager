@@ -109,7 +109,7 @@ export default {
     const userData = req.body;
     try {
       await userDatamapper.updateUser(userData, req.user.id);
-      res.json({ message: 'Profile Updated' });
+      res.status(200).json({ message: 'Profile Updated' });
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new customApiError(err.message, 400);
@@ -120,7 +120,7 @@ export default {
   async deleteProfile(req: Request, res: Response) {
     try {
       await userDatamapper.deleteUser(req.user.id);
-      res.json(`User with id: ${req.user.id} deleted`)
+      res.status(200).json(`User with id: ${req.user.id} deleted`)
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new customApiError(err.message, 400);

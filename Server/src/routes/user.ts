@@ -1,3 +1,4 @@
+import parkingController from '@/controllers/parking';
 import userController from '@/controllers/user';
 import { authenticateJWT } from '@/middlewares/JWT';
 import { login, register, updateProfile } from '@/validations/schemas/user';
@@ -16,5 +17,12 @@ router.post('/login', validator(login), userController.login);
 router.get('/profile', authenticateJWT, userController.findOneUserById);
 router.patch('/profile/edit', authenticateJWT, validator(updateProfile), userController.updateProfile);
 router.delete('/profile/delete', authenticateJWT, userController.deleteProfile);
+
+// Spaces
+router.get('/space/find', authenticateJWT, parkingController.findMySpaces);
+router.get('/space/:floor', parkingController.findAllFreeSpacesPerFloor);
+router.patch('/space/assign/:spaceId', authenticateJWT, parkingController.assignUserToOneSpace);
+router.patch('/space/unassign/:spaceId', authenticateJWT, parkingController.unassignUserToOneSpace);
+
 
 export default router;
