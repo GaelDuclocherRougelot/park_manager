@@ -98,7 +98,7 @@ export default {
         }
       );
 
-      res.status(200).json({ message: 'Login successful', token });
+      res.status(200).json({ message: 'Login successful', token, user_role: existingUser.user_role});
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new customApiError(err.message, 400);
