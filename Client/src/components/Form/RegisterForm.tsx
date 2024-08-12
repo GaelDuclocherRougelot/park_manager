@@ -1,9 +1,11 @@
-"use client";
 
-import Button from "@/components/ui/Button/Button";
-import { useRouter } from "next/navigation";
+
+import React from "react";
+import Button from "../ui/Button/Button";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+
 
 type FormData = {
   email: string;
@@ -14,7 +16,7 @@ type FormData = {
   user_role: string;
 };
 
-export default function RegisterPage() {
+export default function RegisterForm() {
   const {
     register,
     handleSubmit,
@@ -22,11 +24,11 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm<FormData>();
   const [message, setMessage] = useState("");
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect (() => {
     if(sessionStorage.getItem("token")) {
-      router.push("/");
+      navigate("/");
     }
   
   }, [])
@@ -45,7 +47,7 @@ export default function RegisterPage() {
     const result = await res.json();
 
     if (res.ok) {
-      router.push('/login');
+      navigate('/login');
       setMessage("Registration successful!");
     } else {
       setMessage(result.message);
@@ -55,11 +57,6 @@ export default function RegisterPage() {
   const password = watch("password");
 
   return (
-    <main className="h-screen flex flex-col md:flex-row gap-10 items-center justify-center w-full px-4 md:px-0">
-      <div className="flex flex-col md:w-[70%] md:px-6 lg:px-14 md:bg-slate-800 md:h-full justify-center text-slate-800 md:text-white">
-        <h1>Register</h1>
-        <h2>Welcome to our new parking platform!</h2>
-      </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-4 w-full md:w-4/8 md:px-6 lg:px-14"
@@ -147,9 +144,8 @@ export default function RegisterPage() {
         </div>
 
         <Button type="submit" title="Register" classNames="w-full mt-8" />
+        {message && <p>{message}</p>}
       </form>
 
-      {message && <p>{message}</p>}
-    </main>
   );
 }
