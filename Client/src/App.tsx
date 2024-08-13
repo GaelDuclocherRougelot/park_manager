@@ -8,9 +8,11 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import SpaceList from "./components/SpaceList/SpaceList";
 import { useAuth } from "./contexts/authContext";
 import useDecodeTokenAndSetUserRole from "./hooks/useDecodeToken";
+import ProtectedRouteAdmin from "./components/ProtectedRoute/ProtectedRouteAdmin";
+import CreateParking from "./components/Admin/CreateParking";
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, userRole } = useAuth();
   useDecodeTokenAndSetUserRole(sessionStorage.getItem("token"));
 
   return (
@@ -26,6 +28,15 @@ function App() {
             <ProtectedRoute isAuthenticated={isAuthenticated}>
               <SpaceList />
             </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/parking/create"
+          element={
+            <ProtectedRouteAdmin isAuthenticated={isAuthenticated} userRole={userRole}>
+              <CreateParking />
+            </ProtectedRouteAdmin>
           }
         />
 
