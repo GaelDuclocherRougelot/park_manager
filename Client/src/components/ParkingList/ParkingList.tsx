@@ -53,16 +53,26 @@ export default function ParkingList() {
   }
 
   return (
-    <div className="pl-64">
-      <h1>Parkings</h1>
-      <ul>
+    <main className="pt-14 md:pt-0 md:pl-64 h-screen w-screen overflow-hidden">
+    <div className="shadow-lg px-6 py-6 md:m-4 rounded-2xl md:border h-screen md:h-auto w-full">
+      <h1 className="text-indigo-800">Parkings</h1>
+      <ul className="flex flex-col gap-6 mt-14 overflow-scroll w-full h-[calc(80vh)] border rounded-xl p-6">
         {parkings.map((parking) => (
-          <li key={parking.id} onClick={() => handleClick(parking)}>
-            <h2>{parking.name}</h2>
-            <p>{parking.address}</p>
+          <li
+            key={parking.id}
+            onClick={() => handleClick(parking)}
+            className="py-4 px-4 border border-indigo-800 rounded-lg h-fit w-full cursor-pointer"
+          >
+            <p className="text-2xl text-indigo-900">{parking.name}</p>
+            <p className="text-md">{parking.address}</p>
+            <p className="text-md">{parking.floors} floors</p>
+            <p className="text-md">{parking.space_per_floor * parking.floors} free spots</p>
+
+
           </li>
         ))}
       </ul>
     </div>
+  </main>
   );
 }

@@ -19,10 +19,6 @@ export default function Profile() {
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch user");
-        }
-
         const data = await response.json();
         setCurrentUser(data);
       } catch (error: unknown) {
@@ -35,7 +31,7 @@ export default function Profile() {
     };
 
     fetchProfile();
-  }, []);
+  }, [currentUser]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -44,13 +40,13 @@ export default function Profile() {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  if (currentUser) {
-    return (
-      <div className="pl-64">
-        <h1>Welcome {currentUser.fullname}</h1>
+
+  return (
+    <main className="pt-14 md:pt-0 md:pl-64 h-screen w-screen overflow-hidden">
+      <div className="shadow-lg px-6 py-6 md:m-4 rounded-2xl md:border h-screen md:h-auto w-full">
+        <h1 className="text-indigo-800">Welcome {currentUser?.fullname}</h1>
+        
       </div>
-    );
-  } else {
-    return <></>;
-  }
+    </main>
+  );
 }

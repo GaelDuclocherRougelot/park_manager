@@ -34,7 +34,6 @@ export default function CreateParking() {
     });
 
     const result = await res.json();
-    console.log(result);
     if (res.ok) {
       navigate("/");
     } else {

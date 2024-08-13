@@ -12,17 +12,16 @@ const ProtectedRouteAdmin: React.FC<ProtectedRouteProps> = ({
   userRole,
   children,
 }) => {
-
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isAuthenticated) {
-        setRedirectPath('/login');
-      } else if (isAuthenticated && userRole !== 'admin') {
-        setRedirectPath('/');
+        setRedirectPath("/login");
+      } else if (isAuthenticated && userRole !== "admin") {
+        setRedirectPath("/");
       }
-    }, 100);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [isAuthenticated, userRole]);

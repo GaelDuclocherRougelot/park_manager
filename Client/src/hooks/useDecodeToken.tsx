@@ -25,9 +25,9 @@ const useDecodeTokenAndSetUserRole = (token: string | null) => {
           setIsAuthenticated(false);
           setToken(null);
         } else {
+          setToken(token);
           setUserRole(decodedToken.role || "");
           setIsAuthenticated(true);
-          setToken(token);
         }
       } catch (error) {
         console.error("Invalid token:", error);

@@ -67,9 +67,7 @@ export default function SpaceList() {
           throw new Error("Failed to fetch parkings");
         }
 
-        const data = await response.json();
-
-        console.log(data);
+        setSpaces((prevSpaces) => prevSpaces.filter((s) => s.id !== space.id));
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
