@@ -1,7 +1,6 @@
 export interface UserBase {
   id?: number;
-  firstname: string;
-  lastname: string;
+  fullname: string;
   user_role: string;
   email: string;
   createdAt?: Date;

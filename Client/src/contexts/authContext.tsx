@@ -5,6 +5,11 @@ interface AuthContextType {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   userRole: string;
   setUserRole: (userRole: string) => void;
+  token: string | null;
+  setToken: (token: string | null) => void;
+  userId: number | null;
+  setUserId: (userId: number | null) => void;
+
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,10 +27,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string>("");
+  const [token, setToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
+
+
 
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userRole, setUserRole }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userRole, setUserRole, token, setToken, setUserId, userId }}>
       {children}
     </AuthContext.Provider>
   );
