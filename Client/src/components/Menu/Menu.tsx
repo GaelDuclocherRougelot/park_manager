@@ -5,6 +5,11 @@ import Button from "../ui/Button/Button";
 
 const links = [
   {
+    name: "Home",
+    slug: "/",
+    role: "",
+  },
+  {
     name: "Register",
     slug: "/register",
     role: "",
