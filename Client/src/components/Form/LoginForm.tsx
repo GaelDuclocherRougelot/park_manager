@@ -44,7 +44,7 @@ export default function LoginForm() {
 
   return (
     <main className="h-screen w-full flex flex-col md:flex-row items-center justify-center gap-10">
-      <div className="flex flex-col justify-center md:bg-gradient-to-bl from-slate-800 to-[#141726] md:text-white w-full md:w-2/4 h-fit md:h-screen ">
+      <div className="flex flex-col justify-center md:bg-gradient-to-r from-slate-800 to-indigo-900 md:text-white w-full md:w-2/4 h-fit md:h-screen ">
         <img src="car.png" alt="" className="w-32 absolute top-10 left-10" />
         <h1 className="px-4 md:px-6 lg:px-14 w-full">Park manager</h1>
         <h2 className="px-4 md:px-6 lg:px-14">

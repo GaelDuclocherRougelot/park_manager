@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Space } from "../../../types/parking";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../contexts/authContext";
+import Button from "../ui/Button/Button";
 
 export default function SpaceList() {
   const { token } = useAuth();
@@ -87,13 +88,14 @@ export default function SpaceList() {
   }
 
   return (
-    <div className="pl-64">
+    <div className="ml-64 px-14">
       <h1>Parking spots</h1>
       <h2>Floor: {floor}</h2>
-      <ul>
+      <ul className="flex flex-col gap-10">
         {spaces.map((space) => (
-          <li key={space.id} onClick={() => handleClick(space)}>
-            <h2>{space.space_number}</h2>
+          <li key={space.id} className="flex gap-10 border border-indigo-800 rounded-2xl py-4 px-4">
+            <h2>Spot {space.space_number}</h2>
+            <Button title="Rent" onClick={() => handleClick(space)}/>
           </li>
         ))}
       </ul>

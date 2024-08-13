@@ -13,10 +13,22 @@ const useDecodeTokenAndSetUserRole = (token: string | null) => {
   useEffect(() => {
     if (token) {
       try {
-        const decoded = jwtDecode<MyJwtPayload>(token);
-        setUserRole(decoded.role || "");
-        setIsAuthenticated(true);
-        setToken(token);
+        const decodedToken = jwtDecode<MyJwtPayload>(token);
+        const currentDate = new Date();
+
+        if (
+          decodedToken.exp !== undefined &&
+          decodedToken.exp * 1000 < currentDate.getTime()
+        ) {
+          sessionStorage.removeItem('token');
+          setUserRole("");
+          setIsAuthenticated(false);
+          setToken(null);
+        } else {
+          setUserRole(decodedToken.role || "");
+          setIsAuthenticated(true);
+          setToken(token);
+        }
       } catch (error) {
         console.error("Invalid token:", error);
         setUserRole("");
