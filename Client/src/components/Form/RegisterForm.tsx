@@ -1,11 +1,7 @@
-
-
-import React from "react";
-import Button from "../ui/Button/Button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-
+import Button from "../ui/Button/Button";
 
 type FormData = {
   email: string;
@@ -26,13 +22,6 @@ export default function RegisterForm() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  useEffect (() => {
-    if(sessionStorage.getItem("token")) {
-      navigate("/");
-    }
-  
-  }, [])
-
   const onSubmit = async (data: FormData) => {
     const { confirmPassword, ...formData } = data;
 
@@ -47,7 +36,7 @@ export default function RegisterForm() {
     const result = await res.json();
 
     if (res.ok) {
-      navigate('/login');
+      navigate("/login");
       setMessage("Registration successful!");
     } else {
       setMessage(result.message);
@@ -57,9 +46,17 @@ export default function RegisterForm() {
   const password = watch("password");
 
   return (
+    <main className="h-screen w-full flex flex-col md:flex-row items-center justify-center gap-10">
+      <div className="flex flex-col justify-center md:bg-gradient-to-bl from-slate-800 to-[#141726] md:text-white w-full md:w-2/4 h-fit md:h-screen ">
+        <img src="car.png" alt="" className="w-32 absolute top-10 left-10" />
+        <h1 className="px-4 md:px-6 lg:px-14 w-full">Park manager</h1>
+        <h2 className="px-4 md:px-6 lg:px-14">
+          Welcome on our new parking platform !
+        </h2>
+      </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 w-full md:w-4/8 md:px-6 lg:px-14"
+        className="flex flex-col gap-4 w-full lg:w-2/4 px-4 md:px-6 lg:px-14"
       >
         {/* Email */}
         <div className="flex flex-col">
@@ -144,8 +141,14 @@ export default function RegisterForm() {
         </div>
 
         <Button type="submit" title="Register" classNames="w-full mt-8" />
+        <div className="flex gap-2">
+          <p>Don't have an account yet?</p>
+          <a href="/login" className="font-medium">
+            Login
+          </a>
+        </div>
         {message && <p>{message}</p>}
       </form>
-
+    </main>
   );
 }
