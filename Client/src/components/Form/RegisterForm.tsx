@@ -7,8 +7,7 @@ type FormData = {
   email: string;
   password: string;
   confirmPassword: string;
-  firstname: string;
-  lastname: string;
+  fullname: string;
   user_role: string;
 };
 
@@ -70,27 +69,15 @@ export default function RegisterForm() {
           )}
         </div>
 
-        {/* First Name */}
+        {/* Fullname */}
         <div className="flex flex-col">
-          <label>First Name</label>
+          <label>Fullname</label>
           <input
             type="text"
-            {...register("firstname", { required: "First name is required" })}
+            {...register("fullname", { required: "Fullname is required" })}
           />
-          {errors.firstname && (
-            <p className="text-red-500">{errors.firstname.message}</p>
-          )}
-        </div>
-
-        {/* Last Name */}
-        <div className="flex flex-col">
-          <label>Last Name</label>
-          <input
-            type="text"
-            {...register("lastname", { required: "Last name is required" })}
-          />
-          {errors.lastname && (
-            <p className="text-red-500">{errors.lastname.message}</p>
+          {errors.fullname && (
+            <p className="text-red-500">{errors.fullname.message}</p>
           )}
         </div>
 

@@ -1,5 +1,6 @@
 "use client";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/authContext";
 import Button from "../ui/Button/Button";
 
 const links = [
@@ -25,24 +26,29 @@ const links = [
   },
 ];
 
-
 export default function Menu() {
   const location = useLocation();
-  if(location.pathname.includes("login") || location.pathname.includes("register")) return <></>;
+  const navigate = useNavigate();
+  if (
+    location.pathname.includes("login") ||
+    location.pathname.includes("register")
+  )
+    return <></>;
+  const { setIsAuthenticated, isAuthenticated } = useAuth();
   return (
-    <nav className="h-screen w-full md:w-64 transition-all duration-200 bg-white absolute left-0 md:p-6">
-      <div className="flex flex-col gap-10">
-        {/* <Links /> */}
-      </div>
-
+    <nav className="h-screen flex flex-col justify-between w-full md:w-64 transition-all duration-200 bg-white absolute left-0 md:p-6 shadow-md rounded-e-2xl">
+      <div className="flex flex-col gap-10">{/* <Links /> */}</div>
+      {isAuthenticated && (
         <Button
           title="Disconnect"
           classNames="w-full"
           onClick={() => {
-
+            sessionStorage.removeItem("token");
+            setIsAuthenticated(false);
+            navigate('/login');
           }}
         />
-    
+      )}
     </nav>
   );
 }
