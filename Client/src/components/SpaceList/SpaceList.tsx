@@ -15,7 +15,6 @@ export default function SpaceList() {
   const floor = searchParams.get("floor") || "0";
   const page = parseInt(searchParams.get("page") || "1", 10);
   const pageSize = parseInt(searchParams.get("pageSize") || "20", 10);
-  const [totalItems, setTotalItems] = useState<number>(0);
   const maxFloors = 4; // Valeur constante des étages
   const navigate = useNavigate();
 
@@ -39,7 +38,6 @@ export default function SpaceList() {
 
         const data = await response.json();
         setSpaces(data.spaces);
-        setTotalItems(data.totalItems); // Nombre total d'éléments
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);

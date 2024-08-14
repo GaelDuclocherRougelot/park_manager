@@ -9,9 +9,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const saltOrRounds = 10;
 
 export default {
-  async findAllUsers(req: Request, res: Response) {
-    const users = await userDatamapper.findAllUsers();
-    return res.json(users);
+  async findAllParkingOwners(req: Request, res: Response) {
+    const owners = await userDatamapper.findAllParkingOwners();
+    return res.json(owners);
   },
 
   async findOneUserById(req: Request, res: Response) {
@@ -26,8 +26,7 @@ export default {
   async register(req: Request, res: Response) {
     const {
       email,
-      firstname,
-      lastname,
+      fullname,
       password,
       user_role,
     }: UserWithPassword = req.body;
@@ -46,8 +45,7 @@ export default {
 
       await userDatamapper.createUser({
         email: email,
-        firstname: firstname,
-        lastname: lastname,
+        fullname: fullname,
         hashed_password: hashed_password,
         user_role: user_role,
       });

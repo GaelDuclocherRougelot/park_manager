@@ -3,7 +3,7 @@ import CustomApiError from '@/errors/apiErrors';
 import { Parking, Space } from '@/types/parking';
 
 export default {
-  async createParking(parkingData: Parking, userId: number) {    
+  async createParking(parkingData: Parking, userId: number) {
     try {
       await sql`
     INSERT INTO "parking"
@@ -11,6 +11,21 @@ export default {
     VALUES (${parkingData.name}, ${parkingData.space_per_floor}, ${parkingData.floors}, ${parkingData.address}, ${userId})
     RETURNING *
 `;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new CustomApiError(err.message, 400);
+      }
+    }
+  },
+
+  async findLatestCreatedParking(userId: number) {
+    try {
+      const parking = await sql`SELECT *
+        FROM "parking"
+        WHERE owner = ${userId}
+        ORDER BY id DESC
+        LIMIT 1;`;
+      return parking;
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new CustomApiError(err.message, 400);
@@ -39,7 +54,7 @@ export default {
   async deleteParkingByPk(parkingId: string, userId: number) {
     try {
       await sql`DELETE FROM "parking" WHERE "id" = ${parkingId} AND "owner" = ${userId};
-      `
+      `;
     } catch (err: unknown) {
       if (err instanceof Error) {
         throw new CustomApiError(err.message, 400);
@@ -47,13 +62,31 @@ export default {
     }
   },
 
-  async findAllParkings(page: number, pageSize: number) {
+  async findAllParkingsByOwner(
+    page: number,
+    pageSize: number,
+    ownerId: number
+  ) {
     const offset = (page - 1) * pageSize;
     const limit = pageSize;
 
     try {
-      const parkings =
-        await sql`SELECT * FROM "parking" ORDER BY createdat DESC LIMIT ${limit} OFFSET ${offset}`;
+      const parkings = await sql`SELECT
+        p.*,
+        COUNT(CASE WHEN s."space_owner" IS NULL THEN 1 END) AS "free_spaces",
+        COUNT(CASE WHEN s."space_owner" IS NOT NULL THEN 1 END) AS "reserved_spaces"
+    FROM
+        "parking" p
+    LEFT JOIN
+        "space" s ON p."id" = s."parking"
+    WHERE
+        p."owner" = ${ownerId}
+    GROUP BY
+        p."id"
+    ORDER BY
+        p."createdat" DESC
+    LIMIT ${limit}
+    OFFSET ${offset};`;
       return parkings;
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -62,18 +95,19 @@ export default {
     }
   },
 
-  async findFreeSpacePerFloor(page: number, pageSize: number, floor: string) {
-    const offset = (page - 1) * pageSize;
-    const limit = pageSize;
+  async findFreeSpacePerFloor(
+    floor: number,
+    parkingId: string
+  ) {
+
 
     try {
       const freeSpaces = await sql`SELECT * 
         FROM "space" 
         WHERE "space_owner" IS NULL 
-        AND "floor" = ${floor} 
-        ORDER BY space_number ASC
-        LIMIT ${limit} 
-        OFFSET ${offset}`;
+        AND "floor" = ${floor}
+        AND "parking" = ${parkingId}
+        ORDER BY space_number ASC`;
 
       return freeSpaces;
     } catch (err: unknown) {
@@ -109,8 +143,17 @@ export default {
 
   async findParkingsByOwner(userId: number) {
     try {
-      const parking =
-        await sql`SELECT * FROM "parking" WHERE "owner" = ${userId}`;
+      const parking = await await sql`
+      SELECT
+        p.*,
+        COUNT(CASE WHEN s."space_owner" IS NULL THEN 1 END) AS "free_spaces",
+        COUNT(CASE WHEN s."space_owner" IS NOT NULL THEN 1 END) AS "reserved_spaces",
+        (COUNT(CASE WHEN s."space_owner" IS NOT NULL THEN 1 END) * 100.0 / NULLIF(COUNT(s."id"), 0)) AS "occupation_rate"
+      FROM "parking" p
+      LEFT JOIN "space" s ON p."id" = s."parking"
+      WHERE p.owner = ${userId}
+      GROUP BY p."id";
+    `;
       return parking;
     } catch (err: unknown) {
       if (err instanceof Error) {

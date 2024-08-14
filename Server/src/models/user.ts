@@ -3,9 +3,9 @@ import CustomApiError from '@/errors/apiErrors';
 import { UserWithHashedPassword } from '@/types/user';
 
 export default {
-  async findAllUsers() {
-    const users = await sql`SELECT * FROM users`;
-    return users;
+  async findAllParkingOwners() {
+    const owners = await sql`SELECT id, fullname, user_role, updatedat, createdat, email FROM users WHERE "user_role" = 'admin'`;
+    return owners;
   },
 
   async findUserByEmail(email: string) {
@@ -39,8 +39,8 @@ export default {
     try {
       await sql`
     INSERT INTO "users"
-    ("email", "firstname", "lastname", "hashed_password", "user_role")
-    VALUES (${user.email}, ${user.firstname}, ${user.lastname}, ${user.hashed_password}, ${user.user_role})
+    ("email", "fullname", "hashed_password", "user_role")
+    VALUES (${user.email}, ${user.fullname}, ${user.hashed_password}, ${user.user_role})
     RETURNING *
 `;
     } catch (err: unknown) {
@@ -51,14 +51,13 @@ export default {
   },
 
   async updateUser(
-    userData: { firstname: string; lastname: string },
+    userData: { fullname: string; lastname: string },
     userId: number
   ) {
     try {
       await sql`
       UPDATE "users"
-      SET firstname = COALESCE(NULLIF(${userData.firstname}, ''), firstname),
-          lastname = COALESCE(NULLIF(${userData.lastname}, ''), lastname),
+      SET fullname = COALESCE(NULLIF(${userData.fullname}, ''), fullname),
           updatedat = NOW()
       WHERE "id" = ${userId}`;
     } catch (err: unknown) {
