@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { ParkingWithId } from "../../../types/parking";
+import { ParkingWithId, ParkingWithOccupation } from "../../../types/parking";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function ParkingList() {
-  const [parkings, setParkings] = useState<ParkingWithId[]>([]);
+  const [parkings, setParkings] = useState<ParkingWithOccupation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const naviate = useNavigate();
@@ -28,6 +28,8 @@ export default function ParkingList() {
 
         const data = await response.json();
         setParkings(data.parkings);
+        console.log(data);
+        
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
@@ -41,7 +43,7 @@ export default function ParkingList() {
   }, []);
 
   const handleClick = (parking: ParkingWithId) => {
-    return naviate(`/owner/${ownerId}/parking/${parking.id}?floor=0&page=1&pageSize=100`);
+    return naviate(`/owner/${ownerId}/parking/${parking.id}?max_floor=${parking.floors}&floor=0`);
   };
 
   if (loading) {
@@ -53,10 +55,10 @@ export default function ParkingList() {
   }
 
   return (
-    <main className="pt-14 md:pt-0 md:pl-64 h-screen w-screen overflow-hidden">
-    <div className="shadow-lg px-6 py-6 md:m-4 rounded-2xl md:border h-screen md:h-auto w-full">
+    <main className="pt-10 md:pt-0 md:pl-64 h-screen w-screen overflow-hidden flex">
+      <div className="shadow-md px-4 py-6 md:m-4 rounded-2xl md:border h-screen md:h-auto w-full">
       <h1 className="text-indigo-800">Parkings</h1>
-      <ul className="flex flex-col gap-6 mt-14 overflow-scroll w-full h-[calc(80vh)] border rounded-xl p-6">
+      <ul className="flex flex-col md:flex-row md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-14 overflow-scroll w-full h-[calc(80vh)] border rounded-xl p-6">
         {parkings.map((parking) => (
           <li
             key={parking.id}
@@ -66,9 +68,7 @@ export default function ParkingList() {
             <p className="text-2xl text-indigo-900">{parking.name}</p>
             <p className="text-md">{parking.address}</p>
             <p className="text-md">{parking.floors} floors</p>
-            <p className="text-md">{parking.space_per_floor * parking.floors} free spots</p>
-
-
+            <p className="text-md">{parking.free_spaces} free spots</p>
           </li>
         ))}
       </ul>

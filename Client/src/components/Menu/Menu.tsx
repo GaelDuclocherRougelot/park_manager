@@ -21,14 +21,9 @@ const links = [
     role: "",
   },
   {
-    name: "Profile",
-    slug: "/profile",
+    name: "My parking spots",
+    slug: "/my-spots",
     role: "public",
-  },
-  {
-    name: "Profile",
-    slug: "/admin/profile",
-    role: "admin",
   },
   {
     name: "Create parking",
@@ -67,7 +62,7 @@ function Links({
           <a
             key={link.slug}
             href={link.slug}
-            className={`py-2 px-4 text-center md:text-left text-slate-800 border-b text-xl hover:border-slate-800 transition-colors duration-200 w-full ${
+            className={`py-4 px-4 text-center md:text-left text-slate-800 border-b text-xl hover:border-slate-800 transition-colors duration-200 w-full ${
               path === link.slug ? "border-slate-800 font-semibold" : ""
             }`}
           >
@@ -93,9 +88,9 @@ export default function Menu() {
     <>
       <div className="flex items-center justify-end px-4 md:hidden w-screen h-[60px] bg-white fixed top-0 z-20">
         <div className="flex flex-col justify-center gap-[7px] w-[30px] h-[30px]" onClick={() => setMenuIsOpen(!menuIsOpen)}>
-          <span className="h-[2px] bg-black"></span>
-          <span className="h-[2px] bg-black"></span>
-          <span className="h-[2px] bg-black"></span>
+          <span className={`transition-transform duration-500 ${menuIsOpen ? "translate-y-[9px]" : ""} h-[2px] bg-black`}></span>
+          <span className={`transition-opacity duration-500 ${menuIsOpen ? "opacity-0" : ""} h-[2px] bg-black`}></span>
+          <span className={`transition-transform duration-500 ${menuIsOpen ? "-translate-y-[9px]" : ""} h-[2px] bg-black`}></span>
         </div>
       </div>
       <nav className={`h-screen z-10 md:h-[calc(100vh-25px)] flex flex-col justify-between w-full md:w-64 transition-transform duration-500 bg-white fixed left-0 px-4 pt-20 pb-4 md:p-6 shadow-md md:rounded-e-2xl md:border md:my-4 ${menuIsOpen ? "translate-x-0": "-translate-x-full md:translate-x-0"}`}>

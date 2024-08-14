@@ -12,6 +12,13 @@ export interface ParkingWithId extends Parking {
   id: number;
 }
 
+export interface ParkingWithOccupation extends Parking {
+  id: number;
+  reserved_spaces: string;
+  free_spaces: string;
+  occupation_rate: number;
+}
+
 export interface Space {
   id?: number;
   space_number: number,

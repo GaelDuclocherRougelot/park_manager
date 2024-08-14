@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import Button from "../ui/Button/Button";
 import { useAuth } from "../../contexts/authContext";
+import MainLayout from "../Layout/MainLayout";
+import Button from "../ui/Button/Button";
 
 type FormData = {
   name: string;
@@ -23,12 +24,11 @@ export default function CreateParking() {
   const navigate = useNavigate();
 
   const onSubmit = async (data: FormData) => {
-
     const res = await fetch("http://localhost:3000/admin/parking/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -42,10 +42,10 @@ export default function CreateParking() {
   };
 
   return (
-    <main className="h-screen w-full flex flex-col md:flex-row items-center justify-center gap-10">
+    <MainLayout pageTitle="Create parking" classNames="flex flex-col md:flex-row">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 w-full lg:w-2/4 px-4 md:px-6 lg:px-14"
+        className="flex flex-col gap-4 w-full lg:w-2/4 md:px-6 lg:px-14 self-center rounded-xl md:border px-6 py-14"
       >
         {/* Name */}
         <div className="flex flex-col">
@@ -54,9 +54,7 @@ export default function CreateParking() {
             type="text"
             {...register("name", { required: "Name is required" })}
           />
-          {errors.name && (
-            <p className="text-red-500">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
         </div>
 
         {/* Space per floor */}
@@ -64,7 +62,9 @@ export default function CreateParking() {
           <label>Parking spot per floor</label>
           <input
             type="number"
-            {...register("space_per_floor", { required: "Parking spot per floor is required" })}
+            {...register("space_per_floor", {
+              required: "Parking spot per floor is required",
+            })}
           />
           {errors.space_per_floor && (
             <p className="text-red-500">{errors.space_per_floor.message}</p>
@@ -77,7 +77,7 @@ export default function CreateParking() {
           <input
             type="number"
             {...register("floors", {
-              required: "Floors is required"
+              required: "Floors is required",
             })}
           />
           {errors.floors && (
@@ -91,7 +91,7 @@ export default function CreateParking() {
           <input
             type="text"
             {...register("address", {
-              required: "Address is required"
+              required: "Address is required",
             })}
           />
           {errors.address && (
@@ -102,6 +102,6 @@ export default function CreateParking() {
         <Button type="submit" title="Create parking" classNames="w-full mt-8" />
         {message && <p>{message}</p>}
       </form>
-    </main>
+    </MainLayout>
   );
 }
