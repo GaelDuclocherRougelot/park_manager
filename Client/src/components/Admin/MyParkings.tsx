@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ParkingWithId } from "../../../types/parking";
 import { useAuth } from "../../contexts/authContext";
 import Button from "../ui/Button/Button";
@@ -46,6 +46,34 @@ export default function MyParkings() {
       `/admin/parking/${parking.id}/edit`
     );
   };
+  const handleDeleteClick = (parking: ParkingWithId) => {
+    const deleteParking = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/admin/parkings/delete/${parking.id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch delete parking");
+        }
+        setParkings((prevSpaces) => prevSpaces.filter((s) => s.id !== parking.id));
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if(confirm(`Delete ${parking.name} parking ?`) && token) {
+      return deleteParking();
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -75,7 +103,7 @@ export default function MyParkings() {
               </div>
               <div className="flex gap-4">
                 <Button title="Edit" onClick={() => handleEditClick(parking)}/>
-                <Button title="Delete" classNames="md:hover:bg-orange-700" />
+                <Button title="Delete" classNames="md:hover:bg-orange-700" onClick={() => handleDeleteClick(parking)}/>
               </div>
             </li>
           ))}

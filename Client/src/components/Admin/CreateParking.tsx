@@ -35,7 +35,7 @@ export default function CreateParking() {
 
     const result = await res.json();
     if (res.ok) {
-      navigate("/");
+      navigate("/admin/parkings");
     } else {
       setMessage(result.message);
     }

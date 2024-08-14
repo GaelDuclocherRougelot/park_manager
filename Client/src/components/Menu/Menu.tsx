@@ -67,8 +67,8 @@ function Links({
           <a
             key={link.slug}
             href={link.slug}
-            className={`py-2 px-4 text-center md:text-left text-indigo-800 border-b text-xl hover:border-indigo-800 transition-colors duration-200 w-full ${
-              path === link.slug ? "border-indigo-800 font-semibold" : ""
+            className={`py-2 px-4 text-center md:text-left text-slate-800 border-b text-xl hover:border-slate-800 transition-colors duration-200 w-full ${
+              path === link.slug ? "border-slate-800 font-semibold" : ""
             }`}
           >
             {link.name}
