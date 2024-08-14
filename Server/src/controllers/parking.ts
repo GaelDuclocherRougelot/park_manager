@@ -6,9 +6,50 @@ import {
 import { Request, Response } from 'express';
 
 export default {
-  async createParking(req: Request, res: Response) {    
+  async createParking(req: Request, res: Response) {
     try {
       await adminDatamapper.createParking(req.body, req.user.id);
+      const latestCreatedParking = await adminDatamapper.findLatestCreatedParking(req.user.id);
+      
+        // Récupération des détails du parking
+        const parkingData = await parkingDatamapper.findParkingByPk(latestCreatedParking[0].id);
+        const parking = parkingData[0];
+  
+        // Vérification que le parking existe
+        if (!parking) {
+          return res.status(404).json({ error: 'Parking not found' });
+        }
+  
+        // Vérification que l'utilisateur est bien le propriétaire du parking
+        if (parking.owner !== req.user.id) {
+          return res.status(403).json({ error: 'Wrong parking owner' });
+        }
+  
+        const spaces = [];
+        let spaceCounter = 1;
+  
+        // Parcours des étages du parking
+        for (let floor = 0; floor <= parking.floors; floor++) {
+          // Parcours des places pour chaque étage
+          for (
+            let spaceNumber = 1;
+            spaceNumber <= parking.space_per_floor;
+            spaceNumber++
+          ) {
+            // Création de l'espace de la place
+            const space = await parkingDatamapper.createParkingSpaces({
+              space_number: spaceCounter,
+              floor,
+              occupation_time: null,
+              space_owner: null,
+              parking: parking.id,
+            });
+  
+            spaces.push(space);
+            spaceCounter++;
+          }
+        }      
+
       res.status(201).json(`Parking (${req.body.name}) successfuly created !`);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -41,7 +82,10 @@ export default {
 
   async deleteParkingByPk(req: Request, res: Response) {
     try {
-      await adminDatamapper.deleteParkingByPk(req.params.parkingId, req.user.id);
+      await adminDatamapper.deleteParkingByPk(
+        req.params.parkingId,
+        req.user.id
+      );
       res.status(200).json('Parking successfully deleted');
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -50,12 +94,17 @@ export default {
     }
   },
 
-  async getPaginatedParkings(req: Request, res: Response) {
+  async getPaginatedParkingsByOnwer(req: Request, res: Response) {
     const page = parseInt(req.query.page as string) || 1;
     const pageSize = parseInt(req.query.pageSize as string) || 10;
+    const ownerId = parseInt(req.query.owner as string);
 
     try {
-      const parkings = await parkingDatamapper.findAllParkings(page, pageSize);
+      const parkings = await parkingDatamapper.findAllParkingsByOwner(
+        page,
+        pageSize,
+        ownerId
+      );
       res.status(200).json({
         page,
         pageSize,
@@ -69,18 +118,15 @@ export default {
   },
 
   async findAllFreeSpacesPerFloor(req: Request, res: Response) {
-    const page = parseInt(req.query.page as string) || 1;
-    const pageSize = parseInt(req.query.pageSize as string) || 10;
-    const floor = req.params.floor;
+    const floor = parseInt(req.query.floor as string) || 0;
+    const parkingId = req.params.parkingId;
+
     try {
       const spaces = await parkingDatamapper.findFreeSpacePerFloor(
-        page,
-        pageSize,
-        floor
+        floor,
+        parkingId
       );
       res.status(200).json({
-        page,
-        pageSize,
         spaces,
       });
     } catch (err: unknown) {
@@ -101,31 +147,35 @@ export default {
     }
   },
 
-  async createSpaces(req: Request, res: Response) {
-    const { parkingId } = req.params;
+  async createSpaces(req: Request, res: Response, parkingId: any) {
 
     try {
       // Récupération des détails du parking
       const parkingData = await parkingDatamapper.findParkingByPk(parkingId);
       const parking = parkingData[0];
 
+      // Vérification que le parking existe
       if (!parking) {
         return res.status(404).json({ error: 'Parking not found' });
       }
 
+      // Vérification que l'utilisateur est bien le propriétaire du parking
       if (parking.owner !== req.user.id) {
-        return res.status(404).json({ error: 'Wrong parking owner' });
+        return res.status(403).json({ error: 'Wrong parking owner' });
       }
 
       const spaces = [];
       let spaceCounter = 1;
 
-      for (let floor = 0; floor < parking.floors; floor++) {
+      // Parcours des étages du parking
+      for (let floor = 0; floor <= parking.floors; floor++) {
+        // Parcours des places pour chaque étage
         for (
           let spaceNumber = 1;
           spaceNumber <= parking.space_per_floor;
           spaceNumber++
         ) {
+          // Création de l'espace de la place
           const space = await parkingDatamapper.createParkingSpaces({
             space_number: spaceCounter,
             floor,
@@ -133,12 +183,13 @@ export default {
             space_owner: null,
             parking: parking.id,
           });
+
           spaces.push(space);
           spaceCounter++;
         }
       }
 
-      res.status(201).json({
+      res.status(200).json({
         message: `${spaces.length} spaces created successfully!`,
         spaces,
       });

@@ -12,23 +12,14 @@ const register = joi.object({
       'string.empty': 'Email is required.',
       'string.pattern.base': 'Email must be a valid email address.',
     }),
-  firstname: joi
+  fullname: joi
     .string()
     .max(128)
     .required()
     .trim()
     .messages({
-      'string.empty': 'First name is required.',
-      'string.max': 'First name must be at most 128 characters long.',
-    }),
-  lastname: joi
-    .string()
-    .max(128)
-    .required()
-    .trim()
-    .messages({
-      'string.empty': 'Last name is required.',
-      'string.max': 'Last name must be at most 128 characters long.',
+      'string.empty': 'Fullname is required.',
+      'string.max': 'Fullname must be at most 128 characters long.',
     }),
   password: joi
     .string()

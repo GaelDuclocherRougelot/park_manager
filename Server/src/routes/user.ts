@@ -7,7 +7,7 @@ import express from 'express';
 
 const router = express.Router();
 
-router.get('/', userController.findAllUsers);
+router.get('/parking-owners', userController.findAllParkingOwners);
 
 // Registration
 router.post('/register', validator(register), userController.register);
@@ -20,7 +20,7 @@ router.delete('/profile/delete', authenticateJWT, userController.deleteProfile);
 
 // Spaces
 router.get('/space/find', authenticateJWT, parkingController.findMySpaces);
-router.get('/space/:floor', parkingController.findAllFreeSpacesPerFloor);
+router.get('/space/:parkingId', parkingController.findAllFreeSpacesPerFloor);
 router.patch('/space/assign/:spaceId', authenticateJWT, parkingController.assignUserToOneSpace);
 router.patch('/space/unassign/:spaceId', authenticateJWT, parkingController.unassignUserToOneSpace);
 

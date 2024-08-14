@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/parkings', parkingController.findParkingsByOwner);
 router.post('/parking/create', validator(parking) ,parkingController.createParking);
-router.patch('/parkings/edit/:parkingId', validator(parkingEdit), parkingController.updateParking);
+router.patch('/parking/edit/:parkingId', validator(parkingEdit), parkingController.updateParking);
 router.delete('/parkings/delete/:parkingId', parkingController.deleteParkingByPk);
 
 router.post('/spaces/create/:parkingId', parkingController.createSpaces);
