@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+input {
+  @apply border border-slate-400 rounded-md px-4 py-2;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 4vw + 1rem, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.2rem, 4vw + 0.4rem, 1.8rem);
+}
+
+h3 {
+  font-size: clamp(1.2rem, 4vw + 0.4rem, 1.8rem);
+}

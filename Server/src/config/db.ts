@@ -15,3 +15,4 @@ module.exports = postgres({
     options: `project=${ENDPOINT_ID}`,
   },
 });
+
