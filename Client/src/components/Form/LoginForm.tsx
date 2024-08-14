@@ -45,9 +45,9 @@ export default function LoginForm() {
   return (
     <main className="h-screen w-full flex flex-col md:flex-row items-center justify-center gap-10">
       <div className="flex flex-col justify-center md:bg-gradient-to-r from-slate-800 to-indigo-900 md:text-white w-full md:w-2/4 h-fit md:h-screen ">
-        <img src="car.png" alt="" className="w-32 absolute top-10 left-10" />
+      <img src="car.png" alt="" className="hidden md:block w-32 absolute top-10 left-10" />
         <h1 className="px-4 md:px-6 lg:px-14 w-full">Park manager</h1>
-        <h2 className="px-4 md:px-6 lg:px-14">
+        <h2 className="px-4 md:px-6 lg:px-14 max-w-[350px] md:max-w-full">
           Welcome on our new parking platform !
         </h2>
       </div>

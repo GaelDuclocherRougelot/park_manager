@@ -73,7 +73,7 @@ export default function UserParkingSpaces() {
 
   return (
     <MainLayout pageTitle="My parking spots">
-      <ul className="flex flex-col md:flex-row md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4 overflow-auto w-full h-[calc(75vh)] border rounded-xl p-6">
+      <ul className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4 overflow-auto w-full h-[calc(75vh)] border rounded-xl p-6">
         {spaces.length > 0 ? (
           spaces.map((space) => (
             <li
@@ -91,8 +91,8 @@ export default function UserParkingSpaces() {
             </li>
           ))
         ) : (
-          <div>
-            <h2 className="w-full col-span-4">You dont have rent a parking spot yet...</h2>
+          <div className="flex flex-col self-center justify-center items-center w-full col-span-4">
+            <h2 className="">You dont have rent a parking spot yet...</h2>
             <p>Click  <a href="/" className="text-indigo-700">here</a> to search a parking spot!</p>
           </div>
         )}
